@@ -59,10 +59,9 @@ exports ['intialize views'] = function (test){
   .ready(function (err,db){
     it(err).equal(null)
     it(db).ok()
-    //test.done()
+
     db.get('_design/group', function (err,data){
       it(err).equal(null)
-      console.log(data)
       it(data).has({
         views: {
           item: {
@@ -74,4 +73,33 @@ exports ['intialize views'] = function (test){
       test.done()
     })
   })
+}
+
+exports['initialize multiple views'] = function (test){
+  var map, map2
+  init(dbname,{host:'localhost', port:5984})
+  .view('group/item', map = function (doc){
+    emit(1,"HELLO")
+  })
+  .view('group/thing', map2 = function (doc){
+    emit(-1,"GOODBYE")
+  }).ready(function (err,db){
+    it(err).equal(null)
+    it(db).ok()
+    db.get('_design/group', function (err,data){
+      it(err).equal(null)
+      it(data).has({
+        views: {
+          item: {
+            map: it.equal(map.toString())
+          },
+          thing: {
+            map: it.equal(map2.toString()),
+          }
+        }
+      })
+      test.done()
+    })
+  })
+
 }
