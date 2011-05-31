@@ -4,9 +4,10 @@ var cradle = require('cradle')
 function Setup (name, config){
   if(!(this instanceof Setup)) return new Setup(name,config)
 
-  config = config || {cache:true, raw: true}
+  config = config || {cache:true}
   config.host = config.host || 'http://localhost'
   config.port = config.port || 5984
+  config.raw = true
   
   var db = new(cradle.Connection)(config.host,config.port,config).database(name)
     , self = this
@@ -27,12 +28,14 @@ function Setup (name, config){
     var ids = Object.keys(self.views)
 
     db.get(ids,function (err,data){
-      data.__proto__ = Array.prototype
-      data.forEach(function (e){
-        if(self.views[e._id])
-          self.views[e._id]._rev = e._rev
+
+      data.rows.forEach(function (e){
+        console.log(e._id, ':',e.rev, e)
+        if(e.doc) //self.views[e._id])
+          self.views[e.doc._id]._rev = e.doc._rev
       })
       db.save(ids.map(function (e){
+        console.log(self.views[e])
         return self.views[e]
       }),function (err){ callback(err,db) })
     })
