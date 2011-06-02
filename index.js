@@ -4,6 +4,11 @@ var cradle = require('cradle')
 function Setup (name, config){
   if(!(this instanceof Setup)) return new Setup(name,config)
 
+  if('object' = typepof name){
+    config = name
+    name = config.name
+  }
+
   config = config || {cache:true}
   config.host = config.host || 'http://localhost'
   config.port = config.port || 5984
