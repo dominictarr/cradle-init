@@ -35,7 +35,7 @@ function Setup (name, config){
 
       (data.rows || data).forEach(function (e){
         var doc
-        console.log(e._id, ':',e.rev, e)
+        Setup.log(e._id, ':',e.rev, e)
         if ((doc = e.doc || e)) //self.views[e._id])
           self.views[doc._id]._rev = doc._rev
       })
@@ -48,7 +48,7 @@ function Setup (name, config){
   }
   this.ready = function(callback){
     db.exists(function (err,exists){
-    console.log('does couchdb "' + name + '" exist?', exists)
+    Setup.log('does couchdb "' + name + '" exist?', exists)
       if(err)
         callback(err)//probably that there is no couchdb running at host:port
       if(exists){
@@ -56,7 +56,7 @@ function Setup (name, config){
         updateViews(exists,callback)
       } else {
         db.create(function(err,ok){
-          console.log('couchdb "' + name + '" created')
+          Setup.log('couchdb "' + name + '" created')
           //create views
           if(err)
             return callback(err)
@@ -68,6 +68,7 @@ function Setup (name, config){
   }
 }
 
+Setup.log = console.log
 module.exports = Setup
 
 if(!module.parent){
