@@ -1,12 +1,13 @@
 {
   "author": "Dominic Tarr <dominic.tarr@gmail.com>",
+  "contributors": ["dodo (https://github.com/dodo)"],
   "name": "cradle-init",
   "description": "sets up cradle/couch nicely",
-  "version": "0.0.3",
-  "homepage": "http://github.com/dominictarr/cradle-init",
+  "version": "0.0.4",
+  "homepage": "http://github.com/dodo/cradle-init",
   "repository": {
     "type": "git",
-    "url": "git://github.com/dominictarr/cradle-init.git"
+    "url": "https://github.com/dodo/cradle-init.git"
   },
   "main": "./index.js",
   "scripts": {
