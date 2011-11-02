@@ -4,7 +4,7 @@ var cradle = require('cradle')
 function Setup (name, config){
   if(!(this instanceof Setup)) return new Setup(name,config)
 
-  if('object' = typepof name){
+  if('object' === typeof name){
     config = name
     name = config.name
   }
@@ -12,8 +12,7 @@ function Setup (name, config){
   config = config || {cache:true}
   config.host = config.host || 'http://localhost'
   config.port = config.port || 5984
-  config.raw = true
-  
+
   var db = new(cradle.Connection)(config.host,config.port,config).database(name)
     , self = this
   this.views = {}
@@ -34,10 +33,11 @@ function Setup (name, config){
 
     db.get(ids,function (err,data){
 
-      data.rows.forEach(function (e){
-        console.log(e._id, ':',e.rev, e)
-        if(e.doc) //self.views[e._id])
-          self.views[e.doc._id]._rev = e.doc._rev
+      (data.rows || data).forEach(function (e){
+        var doc
+        Setup.log(e._id, ':',e.rev, e)
+        if ((doc = e.doc || e)) //self.views[e._id])
+          self.views[doc._id]._rev = doc._rev
       })
       db.save(ids.map(function (e){
         console.log(self.views[e])
@@ -48,7 +48,7 @@ function Setup (name, config){
   }
   this.ready = function(callback){
     db.exists(function (err,exists){
-    console.log('does couchdb "' + name + '" exist?', exists)
+    Setup.log('does couchdb "' + name + '" exist?', exists)
       if(err)
         callback(err)//probably that there is no couchdb running at host:port
       if(exists){
@@ -56,7 +56,7 @@ function Setup (name, config){
         updateViews(exists,callback)
       } else {
         db.create(function(err,ok){
-          console.log('couchdb "' + name + '" created')
+          Setup.log('couchdb "' + name + '" created')
           //create views
           if(err)
             return callback(err)
@@ -68,6 +68,7 @@ function Setup (name, config){
   }
 }
 
+Setup.log = console.log
 module.exports = Setup
 
 if(!module.parent){
