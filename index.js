@@ -12,8 +12,7 @@ function Setup (name, config){
   config = config || {cache:true}
   config.host = config.host || 'http://localhost'
   config.port = config.port || 5984
-  config.raw = true
-  
+
   var db = new(cradle.Connection)(config.host,config.port,config).database(name)
     , self = this
   this.views = {}
@@ -34,10 +33,11 @@ function Setup (name, config){
 
     db.get(ids,function (err,data){
 
-      data.rows.forEach(function (e){
+      (data.rows || data).forEach(function (e){
+        var doc
         console.log(e._id, ':',e.rev, e)
-        if(e.doc) //self.views[e._id])
-          self.views[e.doc._id]._rev = e.doc._rev
+        if ((doc = e.doc || e)) //self.views[e._id])
+          self.views[doc._id]._rev = doc._rev
       })
       db.save(ids.map(function (e){
         console.log(self.views[e])
