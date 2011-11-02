@@ -4,7 +4,7 @@ var cradle = require('cradle')
 function Setup (name, config){
   if(!(this instanceof Setup)) return new Setup(name,config)
 
-  if('object' = typepof name){
+  if('object' === typeof name){
     config = name
     name = config.name
   }
